@@ -1,6 +1,6 @@
-import { LinkedList } from "./linkedList.js";
+import { LinkedList } from "./linkedListKeyOnly.js";
 
-class HashMap {
+class HashSet {
     constructor () {
         this.defaultSize = 16;
         this.buckets = [...new Array(this.defaultSize)]; // Note: this spread operator gives undefined indices content instead of empty
@@ -20,7 +20,7 @@ class HashMap {
         } 
     }
 
-    hash (key) {
+    hash ( key ) {
         let hashCode = 0;
         const primeNum = 31;
 
@@ -29,22 +29,20 @@ class HashMap {
         }
 
         return hashCode % this.buckets.length ;
-       
     }
 
-    set (key, value) {
+    set (key) {
         const index = this.hash(key);
         
-        // If key exists, update old value
+        // If key exists cancel execution
         if (this.buckets[index] && this.buckets[index].contains(key)) {
-            const bucketList = this.buckets[index];
-            bucketList.update(key, value);
+            return
 
         } else {
             // Check if index is empty then add new key value pair
             if (this.buckets[index] === undefined) {
                 const bucketLinkedList = new LinkedList();
-                bucketLinkedList.append(key, value);
+                bucketLinkedList.append(key);
 
                 this.buckets[index] = bucketLinkedList;
                 this.size++ // since a bucket is filled, log increase of size
@@ -52,23 +50,11 @@ class HashMap {
             } else {
             // If same index/ hashCode is generated append new node to linkedList
                 const bucketList = this.buckets[index];
-                bucketList.append(key, value);
+                bucketList.append(key);
             }
 
             this.contents++; // Log increase of contents
             this._resize(); // Check capacity, execute resize if needed
-        }
-    }
-
-    get ( key ) {
-        const index = this.hash(key);
-        const bucketList = this.buckets[index];
-
-        if (!bucketList) {
-            return null
-
-        } else {
-            return bucketList.getValue(key);
         }
     }
 
@@ -128,33 +114,6 @@ class HashMap {
         
         return keysArr;
     }
-
-    values () {
-        const buckets = this.buckets;
-        let valuesArr = [];
-        for (let i = 0; i < buckets.length; i++) {
-            if (buckets[i]) {
-                const bucketListValues = buckets[i].getValues();
-                valuesArr.push(...bucketListValues);
-            }
-        }
-        
-        return valuesArr;
-    }
-
-    entries () {
-        const buckets = this.buckets;
-        let entriesArr = [];
-        for (let i = 0; i < buckets.length; i++) {
-            if (buckets[i]) {
-                const bucketListEntries = buckets[i].getEntries();
-                entriesArr.push(...bucketListEntries);
-            }
-        }
-        
-        return entriesArr;
-    }
-
 }
 
-export { HashMap }
+export { HashSet }
